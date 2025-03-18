@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'maven-publish'
+}
+
+group = 'ru.capitalBank'
+version = '0.0.1'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+//publishing {
+//    publications {
+//        library(MavenPublication) {
+//            groupId = 'ru.capitalbank'
+//            artifactId = 'TestContainerKafkaStarter'
+//
+//            from components.java
+//
+//            versionMapping {
+//                usage('java-api') {
+//                    fromResolutionOf('runtimeClasspath')
+//                }
+//                usage('java-runtime') {
+//                    fromResolutionResult()
+//                }
+//            }
+//        }
+//    }
+//}
+
+publishing {
+    publications {
+        library(MavenPublication) {
+            from components.java
+            groupId = 'ru.capitalbank'
+            artifactId = 'TestContainerKafkaStarter'
+//
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+        }
+    }
+    repositories {
+        mavenLocal() // Это указывает Gradle загружать артефакт в локальный Maven репозиторий (~/.m2/repository)
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.apache.kafka:kafka-clients'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.testcontainers:kafka'
+    implementation 'org.testcontainers:testcontainers'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+tasks.bootJar {
+    archiveBaseName.set("TestContainerKafkaStarter")
+    archiveVersion.set("0.0.1")
+
+    manifest {
+        attributes.remove("Main") // Удаляем main-класс
+    }
+}
