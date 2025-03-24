@@ -1,1 +1,2 @@
-ru.capitalbank.config.KafkaContainerConfig
+ru.capitalbank.kafka.KafkaContainerInitializer
+ru.capitalbank.config.KafkaConfig

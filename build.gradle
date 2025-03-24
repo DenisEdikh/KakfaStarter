@@ -62,7 +62,6 @@ publishing {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.kafka:kafka-clients'
@@ -74,6 +73,8 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     implementation 'org.testcontainers:kafka'
     implementation 'org.testcontainers:testcontainers'
+    implementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 tasks.named('test') {
