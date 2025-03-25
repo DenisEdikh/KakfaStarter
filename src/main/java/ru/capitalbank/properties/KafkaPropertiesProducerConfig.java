@@ -13,7 +13,6 @@ import java.util.Map;
 @ToString
 @ConfigurationProperties(prefix = "spring.kafka")
 public class KafkaPropertiesProducerConfig {
-    private String bootstrapServers;
     private Producer producer;
 
     @Setter

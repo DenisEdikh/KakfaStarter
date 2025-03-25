@@ -1,29 +1,42 @@
 package ru.capitalbank;
 
+import org.apache.kafka.clients.admin.NewTopic;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.capitalbank.config.KafkaContainerConfig;
-import ru.capitalbank.kafka.KafkaContainerInitializer;
-import ru.capitalbank.kafka.KafkaTopic;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-//@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+@SpringBootTest
+@TestPropertySource(properties = {
+        "spring.starter.container.enabled=true"
+})
 public class KafkaContainerConfigTest {
 
-    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-//            .withPropertyValues("spring.starter.container.enabled=true")
-            .withUserConfiguration(KafkaContainerConfig.class)
-            .withUserConfiguration(KafkaTopic.class);
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Test
-    public void testKafkaContainerConfigLoadsBeansCorrectly() {
-        contextRunner.run(context -> {
-            assertThat(context).hasSingleBean(KafkaContainerInitializer.class);
-            assertThat(context).hasSingleBean(KafkaTopic.class);
-            assertThat(context.getBean(KafkaTopic.class)).isNotNull();
+    void testKafkaContainerConfigLoadsBeansCorrectly() {
+        assertSoftly(softly -> {
+            softly.assertThat(applicationContext.containsBean("kafkaContainerConfig")).isTrue();
+            softly.assertThat(applicationContext.containsBean("kafkaTopic")).isTrue();
+            softly.assertThat(applicationContext.containsBean("kafkaProducerConfig")).isFalse();
+            softly.assertThat(applicationContext.containsBean("kafkaConsumerConfig")).isFalse();
+        });
+    }
+
+    @Test
+    void testKafkaContainerConfigIsValid() {
+        assertSoftly(softly -> {
+            softly.assertThat(applicationContext.getBean("kafkaTopic", NewTopic.class)
+                    .name()).isEqualTo("topic-1");
+            softly.assertThat(applicationContext.getBean("kafkaTopic", NewTopic.class)
+                    .replicationFactor()).isEqualTo((short) 1);
         });
     }
 }

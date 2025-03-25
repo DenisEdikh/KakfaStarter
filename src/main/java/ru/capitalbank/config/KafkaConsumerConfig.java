@@ -1,6 +1,5 @@
 package ru.capitalbank.config;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -11,6 +10,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import ru.capitalbank.properties.KafkaPropertiesConsumerConfig;
+import ru.capitalbank.properties.KafkaPropertiesServerConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,19 +18,16 @@ import java.util.Map;
 @Configuration
 @ConditionalOnProperty(prefix = "spring.starter.consumer", value = "enabled", havingValue = "true")
 @RequiredArgsConstructor
-@EnableConfigurationProperties(KafkaPropertiesConsumerConfig.class)
+@EnableConfigurationProperties({KafkaPropertiesConsumerConfig.class, KafkaPropertiesServerConfig.class})
 public class KafkaConsumerConfig {
     private final KafkaPropertiesConsumerConfig kafkaPropertiesConsumerConfig;
-
-    @PostConstruct
-    public void init() {
-        System.out.println("KAFKA_CONSUMER_CONFIG_IS_STARTED");
-    }
+    private final KafkaPropertiesServerConfig kafkaPropertiesServerConfig;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactoryStarter() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertiesConsumerConfig.getBootstrapServers());
+
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertiesServerConfig.getBootstrapServers());
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getGroupId());
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getKeyDeserializer());
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getValueDeserializer());
@@ -39,7 +36,9 @@ public class KafkaConsumerConfig {
         configProps.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getFetchMinBytes());
         configProps.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getFetchMaxWaitMs());
         configProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getMaxPollRecords());
+
         configProps.putAll(kafkaPropertiesConsumerConfig.getConsumer().getProperties());
+
         return new DefaultKafkaConsumerFactory<>(configProps);
     }
 

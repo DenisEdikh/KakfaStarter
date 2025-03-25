@@ -12,7 +12,6 @@ import java.util.Map;
 @ToString
 @ConfigurationProperties(prefix = "spring.kafka")
 public class KafkaPropertiesConsumerConfig {
-    private String bootstrapServers;
     private Consumer consumer;
 
     @Setter

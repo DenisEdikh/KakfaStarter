@@ -75,6 +75,8 @@ dependencies {
     implementation 'org.testcontainers:testcontainers'
     implementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.testcontainers:junit-jupiter'
+
 }
 
 tasks.named('test') {

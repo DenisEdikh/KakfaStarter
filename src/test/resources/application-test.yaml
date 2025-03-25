@@ -6,9 +6,8 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     topic:
-      names:
-        - topic-1
-        - topic-2
+      name:
+        topic-1
     properties:
       replication-factor: 1
       partitions: 3
@@ -43,8 +42,7 @@ spring:
       acks: -1
       retryBackoff: 100
       topics:
-        - topic-1
-        - topic-2
+        topic-1
       batch-size: 16384
       buffer-memory: 33554432
       compression-type: snappy
@@ -58,8 +56,8 @@ spring:
 
   starter:
     container:
-      enabled: true
+      enabled: false
     producer:
-      enabled: true
+      enabled: false
     consumer:
-      enabled: true
+      enabled: false

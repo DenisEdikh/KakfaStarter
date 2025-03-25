@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
 import java.util.Map;
 
 @Setter
@@ -13,7 +12,6 @@ import java.util.Map;
 @ToString
 @ConfigurationProperties(prefix = "spring.kafka")
 public class KafkaPropertiesTopicConfig {
-    private String bootstrapServers;
     private Topic topic;
     private Property properties;
 
@@ -21,7 +19,7 @@ public class KafkaPropertiesTopicConfig {
     @Setter
     @ToString
     public static class Topic {
-        private List<String> names;
+        private String name;
     }
 
     @Getter
@@ -30,6 +28,6 @@ public class KafkaPropertiesTopicConfig {
     public static class Property {
         private short replicationFactor;
         private int partitions;
-        private Map<String, String> topic;
+        private Map<String, String> props;
     }
 }
