@@ -18,33 +18,14 @@ repositories {
     mavenCentral()
 }
 
-//publishing {
-//    publications {
-//        library(MavenPublication) {
-//            groupId = 'ru.capitalbank'
-//            artifactId = 'TestContainerKafkaStarter'
-//
-//            from components.java
-//
-//            versionMapping {
-//                usage('java-api') {
-//                    fromResolutionOf('runtimeClasspath')
-//                }
-//                usage('java-runtime') {
-//                    fromResolutionResult()
-//                }
-//            }
-//        }
-//    }
-//}
-
 publishing {
     publications {
         library(MavenPublication) {
-            from components.java
             groupId = 'ru.capitalbank'
-            artifactId = 'TestContainerKafkaStarter'
-//
+            artifactId = 'redis-cache-starter'
+
+            from components.java
+
             versionMapping {
                 usage('java-api') {
                     fromResolutionOf('runtimeClasspath')
@@ -56,27 +37,36 @@ publishing {
         }
     }
     repositories {
-        mavenLocal() // Это указывает Gradle загружать артефакт в локальный Maven репозиторий (~/.m2/repository)
+        maven {
+            url = uri("https://nexus.astondevs.ru/repository/CapitalBank-maven/")
+            credentials {
+                username = System.getenv("NEXUS_USERNAME")
+                password = System.getenv("NEXUS_PASSWORD")
+            }
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
     }
+
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.kafka:kafka-clients'
+    implementation 'org.testcontainers:kafka'
+    implementation 'org.testcontainers:testcontainers'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.testcontainers:kafka'
-    implementation 'org.testcontainers:testcontainers'
-    implementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation 'org.testcontainers:junit-jupiter'
 
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
 tasks.named('test') {
@@ -84,10 +74,10 @@ tasks.named('test') {
 }
 
 tasks.bootJar {
-    archiveBaseName.set("TestContainerKafkaStarter")
+    archiveBaseName.set("kafka-starter")
     archiveVersion.set("0.0.1")
 
     manifest {
-        attributes.remove("Main") // Удаляем main-класс
+        attributes.remove("Main")
     }
 }
