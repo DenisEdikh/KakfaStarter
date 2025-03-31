@@ -1,0 +1,15 @@
+image: gradle:8.4.0-jdk17
+
+build:
+  stage: build
+  script:
+    - 'gradle build'
+  rules:
+    - when: always
+
+deploy:
+  stage: deploy
+  script:
+    - 'gradle publish'
+  rules:
+    - when: manual

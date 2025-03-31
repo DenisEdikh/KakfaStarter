@@ -26,18 +26,19 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, String> consumerFactoryStarter() {
         Map<String, Object> configProps = new HashMap<>();
+        KafkaPropertiesConsumerConfig.Consumer consumer = kafkaPropertiesConsumerConfig.getConsumer();
 
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertiesServerConfig.getBootstrapServers());
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getGroupId());
-        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getKeyDeserializer());
-        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getValueDeserializer());
-        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getAutoOffsetReset().name().toLowerCase());
-        configProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().isEnableAutoCommit());
-        configProps.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getFetchMinBytes());
-        configProps.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getFetchMaxWaitMs());
-        configProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, kafkaPropertiesConsumerConfig.getConsumer().getMaxPollRecords());
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, consumer.getGroupId());
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, consumer.getKeyDeserializer());
+        configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, consumer.getValueDeserializer());
+        configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, consumer.getAutoOffsetReset().name().toLowerCase());
+        configProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, consumer.isEnableAutoCommit());
+        configProps.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, consumer.getFetchMinBytes());
+        configProps.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, consumer.getFetchMaxWaitMs());
+        configProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, consumer.getMaxPollRecords());
 
-        configProps.putAll(kafkaPropertiesConsumerConfig.getConsumer().getProperties());
+        configProps.putAll(consumer.getProperties());
 
         return new DefaultKafkaConsumerFactory<>(configProps);
     }

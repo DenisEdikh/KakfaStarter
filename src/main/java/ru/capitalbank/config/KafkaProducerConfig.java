@@ -26,27 +26,19 @@ public class KafkaProducerConfig<T> {
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
+        KafkaPropertiesProducerConfig.Producer producer = kafkaPropertiesProducerConfig.getProducer();
 
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                kafkaPropertiesServerConfig.getBootstrapServers());
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getKeySerializer());
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getValueSerializer());
-        configProps.put(ProducerConfig.RETRIES_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getRetries());
-        configProps.put(ProducerConfig.ACKS_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getAcks());
-        configProps.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getRetryBackoff());
-        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getBatchSize());
-        configProps.put(ProducerConfig.BUFFER_MEMORY_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getBufferMemory());
-        configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG,
-                kafkaPropertiesProducerConfig.getProducer().getCompressionType());
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertiesServerConfig.getBootstrapServers());
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, producer.getKeySerializer());
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, producer.getValueSerializer());
+        configProps.put(ProducerConfig.RETRIES_CONFIG, producer.getRetries());
+        configProps.put(ProducerConfig.ACKS_CONFIG, producer.getAcks());
+        configProps.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, producer.getRetryBackoff());
+        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, producer.getBatchSize());
+        configProps.put(ProducerConfig.BUFFER_MEMORY_CONFIG, producer.getBufferMemory());
+        configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, producer.getCompressionType());
 
-        configProps.putAll(kafkaPropertiesProducerConfig.getProducer().getProperties());
+        configProps.putAll(producer.getProperties());
 
         return new DefaultKafkaProducerFactory<>(configProps);
     }
